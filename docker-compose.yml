@@ -1,0 +1,26 @@
+version: "3.7"
+
+services:
+  song_database:
+    container_name: song_database # This is our MongoDB container name that we will use the latest image
+    image: mongo:latest
+    ports:
+      - 27017:27017 # This is namely HOST_PORT:CONTAINER_PORT . In this example, we are using the same ports.
+
+  application:
+    container_name: song-app-container
+    image: song-app-container
+    links:
+      - song_database
+    depends_on: # Mongodb,song_database,will be started before the  song-app-container which is our main Song application
+      - song_database
+    ports:
+      - "8000:8080"
+  #Defining image for Mongo db, which is under ui-angular folder
+  angular-service:
+    image: angular-service
+    build:
+      context: angular
+      dockerfile: Dockerfile
+    ports:
+      - 4200:4200
